@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style_3.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post" id="login">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="alert-danger"></div>
+                <div class="alert-success"></div>
+            </div> <br>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="forgot-password">
+            <a href="#">Forgot your password?</a>
+        </div>
+        <div class="social-login">
+            <button class="facebook"><i class="fab fa-facebook-f"></i></button>
+            <button class="google"><i class="fab fa-google"></i></button>
+            <button class="twitter"><i class="fab fa-twitter"></i></button>
+        </div>
+    </div>
+
+    <div class="loader"></div>
+
+    <script src="{% static 'js/JQ.js' %}"></script>
+    <script src="{% static 'js/loader.js' %}"></script>
+
+    <script>
+        // ajax
+        $(document).on('submit', '#login', function (e){
+            e.preventDefault();
+            var green = $(".alert-success");
+            var red = $(".alert-danger");
+            var formData = new FormData(this);
+            var loader = document.querySelector(".loader");
+
+            loader.classList.remove("loader-hidden");
+            $.ajax({
+                type: 'POST',
+                url: '/login/',
+                data: formData,
+                processData: false, // Ensure data is not processed for FormData
+                contentType: false, // Ensure proper content type for FormData
+                success: function (response){
+                    var success = response['success'];
+                    if(success){
+                        // NORMAL ALERT warning, error, success
+                        red.removeClass("block");
+                        green.html('');
+                        green.addClass("block");
+                        green.append(response['message']);
+                        loader.classList.add("loader-hidden");
+                        window.location.href = '/';
+                    }else{
+                        green.removeClass("block");
+                        red.html('');
+                        red.addClass("block");
+                        red.append(response['message']);
+                        loader.classList.add("loader-hidden");
+                    }
+
+                    // const con = document.querySelector('.conn');
+                    // if (con) {
+                    //     con.scrollTo({ top: 0, behavior: 'smooth' });
+                    // }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

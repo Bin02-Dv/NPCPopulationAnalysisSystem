@@ -1,0 +1,130 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1e90ff, #87cefa);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e90ff;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+.form-group input {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0px 0px 5px rgba(30, 144, 255, 0.5);
+}
+.login-btn {
+    width: 100%;
+    background: #1e90ff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.login-btn:hover {
+    background: #155a8a;
+}
+.forgot-password {
+    text-align: center;
+    margin-top: 10px;
+}
+.forgot-password a {
+    text-decoration: none;
+    color: #1e90ff;
+    font-size: 14px;
+}
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+.social-login button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: white;
+}
+.social-login .facebook {
+    background: #3b5998;
+}
+.social-login .google {
+    background: #db4a39;
+}
+.social-login .twitter {
+    background: #1da1f2;
+}
+
+.alert-danger{
+    background-color: rgba(254, 60, 86, 0.586);
+    padding: 20px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid red;
+    font-size: 20px;
+    color: rgb(64, 2, 2);
+    display: none;
+}
+
+.alert-success{
+    background-color: rgba(6, 167, 94, 0.586);
+    padding: 20px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid rgba(2, 103, 58, 0.586);
+    font-size: 20px;
+    color: rgba(1, 36, 20, 0.758);
+    display: none;
+    margin-bottom: 10px;
+}
+
+.alert-danger.block {
+    display: block;
+}
+
+.alert-success.block {
+    display: block;
+}

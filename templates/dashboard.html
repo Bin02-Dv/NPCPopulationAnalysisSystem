@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Analysis Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+    <style>
+        button {
+            background-color: #812830;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .alert-danger{
+            background-color: rgba(254, 60, 86, 0.586);
+            padding: 20px;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid red;
+            font-size: 20px;
+            color: rgb(64, 2, 2);
+            display: none;
+        }
+        
+        .alert-success{
+            background-color: rgba(6, 167, 94, 0.586);
+            padding: 20px;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid rgba(2, 103, 58, 0.586);
+            font-size: 20px;
+            color: rgba(1, 36, 20, 0.758);
+            display: none;
+        }
+        
+        .alert-danger.block {
+            display: block;
+        }
+        
+        .alert-success.block {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="npc-logo.png" alt="NPC Logo">
+        <h1>Population Analysis Dashboard</h1>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/upload">Upload Data</a>
+            <!-- <a href="#">Analytics</a> -->
+            <!-- <a href="#">Reports</a> -->
+            <a href="/logout" style="background: red; padding: 5px 10px; border-radius: 5px;">Logout</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="chart-section">
+            <h2>Population Insights</h2>
+            <canvas id="populationBarChart"></canvas>
+            <canvas id="genderPieChart"></canvas>
+        </div>
+        <div class="table-section">
+            <h2>Population Data Table</h2>
+            <input type="text" placeholder="Search LGA..." style="width: 50%; padding: 10px; margin-bottom: 10px;">
+            <form method="post" id="clear">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="alert-danger"></div>
+                    <div class="alert-success"></div>
+                </div> <br>
+                <button>Clear Data</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>LGA</th>
+                        <th>Total Population</th>
+                        <th>Male</th>
+                        <th>Female</th>
+                        <th>Growth Rate (%)</th>
+                        <th>Density</th>
+                        <th>year</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if population_data %}
+                    {% for data in population_data %}
+                    <tr>
+                        <td>{{data.lga_name}}</td>
+                        <td>{{data.population}}</td>
+                        <td>{{data.male_population}}</td>
+                        <td>{{data.female_population}}</td>
+                        <td>{{data.growth_rate}}</td>
+                        <td>{{data.density}}</td>
+                        <td>{{data.year}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td><i>No DATA!</i></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 NPC Katsina | All Rights Reserved
+    </footer>
+    <div class="loader"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/population-data/') // Ensure this matches your URL config
+                .then(response => response.json())
+                .then(data => {
+                    // Bar Chart
+                    const ctxBar = document.getElementById('populationBarChart').getContext('2d');
+                    new Chart(ctxBar, {
+                        type: 'bar',
+                        data: {
+                            labels: data.lgas,
+                            datasets: [{
+                                label: 'Total Population',
+                                data: data.populations,
+                                backgroundColor: 'rgba(0, 128, 255, 0.6)'
+                            }]
+                        }
+                    });
+
+                    // Pie Chart
+                    const ctxPie = document.getElementById('genderPieChart').getContext('2d');
+                    new Chart(ctxPie, {
+                        type: 'pie',
+                        data: {
+                            labels: Object.keys(data.gender_distribution),
+                            datasets: [{
+                                data: Object.values(data.gender_distribution),
+                                backgroundColor: ['#36a2eb', '#ff6384']
+                            }]
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+
+    <script src="{% static 'js/JQ.js' %}"></script>
+    <script src="{% static 'js/loader.js' %}"></script>
+
+    <script>
+        // ajax
+        $(document).on('submit', '#clear', function (e){
+            e.preventDefault();
+            var green = $(".alert-success");
+            var red = $(".alert-danger");
+            var formData = new FormData(this);
+            var loader = document.querySelector(".loader");
+
+            loader.classList.remove("loader-hidden");
+            $.ajax({
+                type: 'POST',
+                url: '/clear_data/',
+                data: formData,
+                processData: false, // Ensure data is not processed for FormData
+                contentType: false, // Ensure proper content type for FormData
+                success: function (response){
+                    var success = response['success'];
+                    if(success){
+                        // NORMAL ALERT warning, error, success
+                        red.removeClass("block");
+                        green.html('');
+                        green.addClass("block");
+                        green.append(response['message']);
+                        loader.classList.add("loader-hidden");
+                        window.location.href = '/';
+                    }else{
+                        green.removeClass("block");
+                        red.html('');
+                        red.addClass("block");
+                        red.append(response['message']);
+                        loader.classList.add("loader-hidden");
+                    }
+
+                    // const con = document.querySelector('.conn');
+                    // if (con) {
+                    //     con.scrollTo({ top: 0, behavior: 'smooth' });
+                    // }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

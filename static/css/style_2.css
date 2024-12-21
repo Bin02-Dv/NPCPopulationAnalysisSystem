@@ -1,0 +1,98 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+header {
+    background-color: #004080;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+header h1 {
+    margin: 0;
+}
+.container {
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.upload-section {
+    border: 2px dashed #004080;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+}
+.upload-section:hover {
+    background-color: #f0f8ff;
+}
+.upload-section input[type="file"] {
+    display: none;
+}
+.preview-section {
+    margin-top: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+table th {
+    background-color: #004080;
+    color: white;
+}
+button {
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #003060;
+}
+
+.alert-danger{
+    background-color: rgba(254, 60, 86, 0.586);
+    padding: 20px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid red;
+    font-size: 20px;
+    color: rgb(64, 2, 2);
+    display: none;
+}
+
+.alert-success{
+    background-color: rgba(6, 167, 94, 0.586);
+    padding: 20px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid rgba(2, 103, 58, 0.586);
+    font-size: 20px;
+    color: rgba(1, 36, 20, 0.758);
+    display: none;
+    margin-bottom: 10px;
+}
+
+.alert-danger.block {
+    display: block;
+}
+
+.alert-success.block {
+    display: block;
+}
