@@ -12,6 +12,18 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
+def search_population(request):
+    query = request.GET.get('search', '')
+    if query:
+        population_data = PopulationData.objects.filter(lga_name__icontains=query).values(
+            'lga_name', 'population', 'male_population', 'female_population', 'growth_rate', 'density', 'year'
+        )
+    else:
+        population_data = PopulationData.objects.all().values(
+            'lga_name', 'population', 'male_population', 'female_population', 'growth_rate', 'density', 'year'
+        )
+    return JsonResponse({'population_data': list(population_data)})
+
 @login_required(login_url='login')
 def dashboard(request):
     population_data = PopulationData.objects.all()

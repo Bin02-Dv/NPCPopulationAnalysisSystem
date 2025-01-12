@@ -69,7 +69,7 @@
         </div>
         <div class="table-section">
             <h2>Population Data Table</h2>
-            <input type="text" placeholder="Search LGA..." style="width: 50%; padding: 10px; margin-bottom: 10px;">
+            <input type="text" id="searchLGA" placeholder="Search LGA..." style="width: 50%; padding: 10px; margin-bottom: 10px;">
             <form method="post" id="clear">
                 {% csrf_token %}
                 <div class="form-group">
@@ -87,30 +87,30 @@
                         <th>Female</th>
                         <th>Growth Rate (%)</th>
                         <th>Density</th>
-                        <th>year</th>
+                        <th>Year</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="populationData">
                     {% if population_data %}
                     {% for data in population_data %}
                     <tr>
-                        <td>{{data.lga_name}}</td>
-                        <td>{{data.population}}</td>
-                        <td>{{data.male_population}}</td>
-                        <td>{{data.female_population}}</td>
-                        <td>{{data.growth_rate}}</td>
-                        <td>{{data.density}}</td>
-                        <td>{{data.year}}</td>
+                        <td>{{ data.lga_name }}</td>
+                        <td>{{ data.population }}</td>
+                        <td>{{ data.male_population }}</td>
+                        <td>{{ data.female_population }}</td>
+                        <td>{{ data.growth_rate }}</td>
+                        <td>{{ data.density }}</td>
+                        <td>{{ data.year }}</td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td><i>No DATA!</i></td>
+                        <td colspan="7"><i>No DATA!</i></td>
                     </tr>
                     {% endif %}
                 </tbody>
             </table>
-        </div>
+        </div>        
     </div>
     <footer>
         &copy; 2024 NPC Katsina | All Rights Reserved
@@ -195,6 +195,44 @@
                     //     con.scrollTo({ top: 0, behavior: 'smooth' });
                     // }
                 }
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $('#searchLGA').on('keyup', function() {
+                let query = $(this).val();
+                $.ajax({
+                    url: '/search/',
+                    method: 'GET',
+                    data: { search: query },
+                    success: function(response) {
+                        let rows = '';
+                        if (response.population_data.length > 0) {
+                            response.population_data.forEach(data => {
+                                rows += `
+                                    <tr>
+                                        <td>${data.lga_name}</td>
+                                        <td>${data.population}</td>
+                                        <td>${data.male_population}</td>
+                                        <td>${data.female_population}</td>
+                                        <td>${data.growth_rate}</td>
+                                        <td>${data.density}</td>
+                                        <td>${data.year}</td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            rows = `<tr><td colspan="7"><i>No DATA!</i></td></tr>`;
+                        }
+                        $('#populationData').html(rows);
+                    },
+                    error: function() {
+                        console.log("Error fetching data.");
+                    }
+                });
             });
         });
     </script>
